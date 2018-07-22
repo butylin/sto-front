@@ -1,0 +1,202 @@
+<!doctype html>
+<html>
+<head>
+    <title>Hello AngularJS</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="rules.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="jumbotron">
+            <h1>Rule Engine</h1>
+            <h2>Add new rules</h2>
+        </div>
+        <div class="panel panel-primary">
+            <div class="panel-heading">Status</div>
+            <div class="panel-body">
+                <!-- App start-->
+                <div ng-app="sto" ng-controller="rules">
+                    <form name="ruleForm" novalidate>
+                        <div class="form-group">
+                            <!--Event group-->
+                            <div class="list-group" name="event-group">
+                                <div class="list-group-item list-group-item-warning">
+                                    <h4 class="list-group-item-heading">Initial trigger event</h4>
+                                    <p class="list-group-item-text">Choose the parameters and  thresholds to trigger the event</p>
+                                </div>
+                                <fieldset class="list-group-item" ng-repeat="startEvent in startEvents">
+                                    <div class="col-xs-4">
+                                        <!--<label class="control-label">Trigger Parameter</label>-->
+                                        <select class="form-control" ng-model="startEvent.selectedParameter" placeholder="Trigger Parameter" name="startEvenParameter" ng-options="s.title for s in sensorParams">
+                                            <option value="" disabled selected>Trigger Parameter</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <!--<label class="control-label">Operator</label>-->
+                                        <select class="form-control" ng-model="startEvent.operator" placeholder="OP" name="startEventOperator" ng-options="o for o in operators">
+                                            <option value="" disabled selected>Operator</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xs-4">
+                                        <!--<label class="control-label">Parameter Value</label>-->
+                                        <input type="number" class="form-control" ng-model="startEvent.value" placeholder="Parameter Value">
+                                    </div>
+                                    <div class="col-xs-1">
+                                        <!--<label class="control-label">Action</label>-->
+                                        <button class="btn btn-danger" ng-click="removeElement(startEvents, $index)">
+                                            <span class="glyphicon glyphicon-remove"></span>
+                                        </button>
+                                    </div>
+                                </fieldset>
+                                <div class="list-group-item panel-footer">
+                                    <button type="button" class="btn btn-primary" ng-click="addElement(startEvents)">
+                                        <span class="glyphicon glyphicon-plus-sign"></span> Add event
+                                    </button>
+                                </div>
+                                <p>{{startEvents}}</p>
+                            </div>
+
+                            <!--Condition group-->
+                            <div class="panel panel-info" name="condition-group">
+                                <div class="panel-heading">
+                                    <h4 class="list-group-item-heading">Monitoring conditions</h4>
+                                    <p class="list-group-item-text">Choose additional time-conditions for monitoring chosen parameters</p>
+                                </div>
+                                <div class="panel-body" >
+                                    <div class="list-group-item">
+                                        <label class="control-label">Condition type</label>
+                                        <select class="form-control" ng-model="ruleCondition.type" ng-options="p for p in condition_panels"></select>
+
+                                    </div>
+                                    <div class="list-group-item">
+                                        <label class="control-label" for="monitorTime">Monitoring time (sec)</label>
+                                        <input type="number" class="form-control" ng-model="ruleCondition.time" id="monitorTime">
+                                    </div>
+                                    <div ng-if="ruleCondition.type == 'simple'" class="list-group" id="simple-condition">
+                                        <fieldset class="list-group-item" ng-repeat="simpleCondition in ruleCondition.simpleConditions">
+                                            <div class="col-xs-2">
+                                                <!--<label class="control-label">Func</label>-->
+                                                <select class="form-control" ng-model="simpleCondition.strategy"  ng-options="st for st in strategies">
+                                                    <option value="" disabled selected>Function</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-xs-4">
+                                                <!--<label class="control-label">Monitored Condition</label>-->
+                                                <select class="form-control" ng-model="simpleCondition.selectedParameter" ng-options="s.title for s in sensorParams">
+                                                    <option value="" disabled selected>Monitored Parameter</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-xs-2">
+                                                <!--<label class="control-label">Operator</label>-->
+                                                <select class="form-control" ng-model="simpleCondition.operator"  ng-options="o for o in operators">
+                                                    <option value="" disabled selected>OP</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-xs-2">
+                                                <!--<label class="control-label">Parameter Value</label>-->
+                                                <input type="number" class="form-control" ng-model="simpleCondition.value" placeholder="Parameter Value">
+                                            </div>
+                                            <div class="col-xs-1">
+                                                <!--<label class="control-label">Action</label>-->
+                                                <button class="btn btn-danger" ng-click="removeElement(ruleCondition.simpleConditions, $index)">
+                                                    <span class="glyphicon glyphicon-remove"></span>
+                                                </button>
+                                            </div>
+                                        </fieldset>
+                                        <div class="panel-footer">
+                                            <button type="button" class="btn btn-primary" ng-click="addElement(ruleCondition.simpleConditions)">
+                                                <span class="glyphicon glyphicon-plus-sign"></span> Add event
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div ng-if="ruleCondition.type == 'complex'" class="list-group" id="complex-condition">
+                                        <fieldset class="list-group-item list-group-item-info">
+                                            <b class="list-group-item-heading">Parameters for condition formula</b>
+                                        </fieldset>
+                                        <fieldset class="list-group-item" ng-repeat="parameter in ruleCondition.complexCondition.parameters">
+                                            <div class="col-xs-4">
+                                                <!--<label class="control-label">Parameter</label>-->
+                                                <select class="form-control" ng-model="parameter.selectedParameter" placeholder="Parameter" name="complexConditionParameter" ng-options="s.title for s in sensorParams">
+                                                    <option value="" disabled selected>Trigger Parameter</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-xs-4">
+                                                <!--<label class="control-label">Literal</label>-->
+                                                <input type="text" class="form-control" ng-model="parameter.literal" placeholder="Literal">
+                                            </div>
+                                            <div class="col-xs-1">
+                                                <!--<label class="control-label">Action</label>-->
+                                                <button class="btn btn-danger" ng-click="removeElement(ruleCondition.complexCondition.parameters, $index)">
+                                                    <span class="glyphicon glyphicon-remove"></span> Remove
+                                                </button>
+                                            </div>
+                                        </fieldset>
+                                        <fieldset class="list-group-item">
+                                            <button type="button" class="btn btn-primary" ng-click="addElement(ruleCondition.complexCondition.parameters)">
+                                                <span class="glyphicon glyphicon-plus-sign"></span> Add parameter
+                                            </button>
+                                        </fieldset>
+                                        <fieldset class="list-group-item">
+                                            <div class="col-xs-4">
+                                                <input type="text" class="form-control" ng-model="ruleCondition.complexCondition.threshold" placeholder="Threshold">
+                                            </div>
+                                            <div class="col-xs-3">
+                                                <select class="form-control" ng-model="ruleCondition.complexCondition.strategy"  ng-options="st for st in strategies">
+                                                    <option value="" disabled selected>Function</option>
+                                                </select>
+                                            </div>
+                                        </fieldset>
+
+                                    </div>
+                                    <p>{{ruleCondition}}</p>
+                                </div>
+
+                            </div>
+
+                            <!--Action group-->
+                            <div class="list-group" name="action-group">
+                                <div class="list-group-item list-group-item-success">
+                                    <h4 class="list-group-item-heading">Action</h4>
+                                    <p class="list-group-item-text">Choose the event which is fired based on conditions above</p>
+                                </div>
+                                <fieldset class="list-group-item">
+                                    <div class="col-xs-4">
+                                        <label class="control-label">Result events</label>
+                                        <select class="form-control" ng-model="selectedResultEvent" placeholder="Trigger Parameter" name="startEvenParameter" ng-options="r.title for r in resultEvents">
+                                            <option value="" disabled selected>Result Events</option>
+                                        </select>
+                                    </div>
+                                    <!--<div class="col-xs-4">-->
+                                        <!--<label class="control-label">New event</label>-->
+                                        <!--<input type="text" class="form-control" ng-model="selectedResultEvent.title" placeholder="Parameter Value">-->
+                                    <!--</div>-->
+                                    <!--<div class="col-xs-2">-->
+                                        <!--<label class="control-label">Action</label>-->
+                                        <!--<button type="button" class="btn btn-primary" ng-click="addStartEvent()">-->
+                                            <!--<span class="glyphicon glyphicon-plus-sign"></span> Add event-->
+                                        <!--</button>-->
+                                    <!--</div>-->
+                                </fieldset>
+
+                                <p>Result event: {{selectedResultEvent}}</p>
+                            </div>
+
+                        </div>
+                        <div class="panel-bottom">
+                            <button type="button" class="btn btn-success" ng-click="saveRule()">
+                                <span class="glyphicon glyphicon-save"></span> Save Rule
+                            </button>
+                        </div>
+                    </form>
+                    {{resultRule}}
+                </div>
+                <!-- App end-->
+            </div>
+        </div>
+    </div>
+<script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+</body>
+</html>
