@@ -38,19 +38,29 @@ app.controller('rules', function ($scope, $http) {
         // {title: "!=", operator: "<>"}
     ];
 
+    $scope.logicalOperators = [
+        'AND', 'OR', 'XOR'
+    ];
+
     $scope.startEvents = [
-        {colId: 0, selectedParameter: '', operator: '', value: '', strategy: '' }
+        {colId: 0, selectedParameter: '', operator: '', strategy: '', period: '', value: '', logicalOperator:'', type: 'simple'}
+    ];
+
+    $scope.startEventTypes = [
+        'simple', 'average', 'predefined'
     ];
 
     $scope.ruleCondition = {
         type: '',
         time: 0,
         simpleConditions: [
-            {colId: 0, selectedParameter: '', operator: '', value: '', strategy: ''}
+            //{colId: 0, selectedParameter: '', operator: '', value: '', strategy: ''}
+            {colId: 0, selectedParameter: '', operator: '', strategy: '', period: '', value: '', logicalOperator:'', type: 'simple'}
             ],
         complexCondition: {
             parameters: [{colId: 0, selectedParameter: '', literal: ''}],
-            threshold: 0,
+            formula: '',
+            threshold: '',
             strategy: ''
         }
     }
@@ -77,7 +87,13 @@ app.controller('rules', function ($scope, $http) {
 
     $scope.addElement = function (list) {
         var newItemNo = list.length+1;
-        list.push({'colId':newItemNo});
+        list.push({colId:newItemNo});
+    }
+
+    $scope.addElementWithType = function (list, type) {
+        type = type == null ? 'simple' : type;
+        var newItemNo = list.length+1;
+        list.push({colId:newItemNo, type: type});
     }
 
     $scope.removeElement = function (list, index) {

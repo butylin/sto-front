@@ -27,33 +27,132 @@
                                     <p class="list-group-item-text">Choose the parameters and  thresholds to trigger the event</p>
                                 </div>
                                 <fieldset class="list-group-item" ng-repeat="startEvent in startEvents">
-                                    <div class="col-xs-4">
-                                        <!--<label class="control-label">Trigger Parameter</label>-->
-                                        <select class="form-control" ng-model="startEvent.selectedParameter" placeholder="Trigger Parameter" name="startEvenParameter" ng-options="s.title for s in sensorParams">
-                                            <option value="" disabled selected>Trigger Parameter</option>
+                                    <div ng-if="startEvent.type == 'simple'">
+                                        <div class="col-xs-3">
+                                            <!--<label class="control-label">Trigger Parameter</label>-->
+                                            <select class="form-control" ng-model="startEvent.selectedParameter" placeholder="Trigger Parameter" name="startEvenParameter" ng-options="s.title for s in sensorParams">
+                                                <option value="" disabled selected>Trigger Parameter</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-xs-2">
+                                            <!--<label class="control-label">Operator</label>-->
+                                            <select class="form-control" ng-model="startEvent.operator" placeholder="OP" name="startEventOperator" ng-options="o for o in operators">
+                                                <option value="" disabled selected>Operator</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-xs-4">
+                                            <!--<label class="control-label">Parameter Value</label>-->
+                                            <input type="number" class="form-control" ng-model="startEvent.value" placeholder="Parameter Value">
+                                        </div>
+                                        <div class="col-xs-2">
+                                            <!--<label class="control-label">Logical Operator</label>-->
+                                            <select class="form-control" ng-model="startEvent.logicalOperator" placeholder="LOP" name="startEventLogicalOperator" ng-options="lo for lo in logicalOperators">
+                                                <option value="" disabled selected>Logical Operator</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-xs-1">
+                                            <!--<label class="control-label">Action</label>-->
+                                            <button class="btn btn-danger" ng-click="removeElement(startEvents, $index)">
+                                                <span class="glyphicon glyphicon-remove"></span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <!--<div ng-if="startEvent.type == 'previous'">-->
+                                        <!--<div class="col-xs-3">-->
+                                            <!--&lt;!&ndash;<label class="control-label">Trigger Parameter</label>&ndash;&gt;-->
+                                            <!--<select class="form-control" ng-model="startEvent.selectedParameter" placeholder="Trigger Parameter" name="startEvenParameter" ng-options="s.title for s in sensorParams">-->
+                                                <!--<option value="" disabled selected>Trigger Parameter</option>-->
+                                            <!--</select>-->
+                                        <!--</div>-->
+                                        <!--<div class="col-xs-2">-->
+                                            <!--&lt;!&ndash;<label class="control-label">Operator</label>&ndash;&gt;-->
+                                            <!--<select class="form-control" ng-model="startEvent.operator" placeholder="OP" name="startEventOperator" ng-options="o for o in operators">-->
+                                                <!--<option value="" disabled selected>Operator</option>-->
+                                            <!--</select>-->
+                                        <!--</div>-->
+                                        <!--<div class="col-xs-4">-->
+                                            <!--&lt;!&ndash;<label class="control-label">Parameter Value</label>&ndash;&gt;-->
+                                            <!--<input type="number" class="form-control" ng-model="startEvent.value" placeholder="Parameter Value">-->
+                                        <!--</div>-->
+                                        <!--<div class="col-xs-2">-->
+                                            <!--&lt;!&ndash;<label class="control-label">Logical Operator</label>&ndash;&gt;-->
+                                            <!--<select class="form-control" ng-model="startEvent.logicalOperator" placeholder="LOP" name="startEventLogicalOperator" ng-options="lo for lo in logicalOperators">-->
+                                                <!--<option value="" disabled selected>Logical Operator</option>-->
+                                            <!--</select>-->
+                                        <!--</div>-->
+                                        <!--<div class="col-xs-1">-->
+                                            <!--&lt;!&ndash;<label class="control-label">Action</label>&ndash;&gt;-->
+                                            <!--<button class="btn btn-danger" ng-click="removeElement(startEvents, $index)">-->
+                                                <!--<span class="glyphicon glyphicon-remove"></span>-->
+                                            <!--</button>-->
+                                        <!--</div>-->
+                                    <!--</div>-->
+                                    <div ng-if="startEvent.type == 'average'">
+                                        <div class="col-xs-3">
+                                            <!--<label class="control-label">Trigger Parameter</label>-->
+                                            <select class="form-control" ng-model="startEvent.selectedParameter" placeholder="Trigger Parameter" name="startEvenParameter" ng-options="s.title for s in sensorParams">
+                                                <option value="" disabled selected>Trigger Parameter</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-xs-2">
+                                            <!--<label class="control-label">Operator</label>-->
+                                            <select class="form-control" ng-model="startEvent.operator" placeholder="OP" name="startEventOperator" ng-options="o for o in operators">
+                                                <option value="" disabled selected>Operator</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-xs-2">
+                                            <!--<label class="control-label">Period</label>-->
+                                            <input type="number" class="form-control" ng-model="startEvent.period" placeholder="Average Period">
+                                        </div>
+                                        <div class="col-xs-2">
+                                            <!--<label class="control-label">Parameter Value</label>-->
+                                            <input type="number" class="form-control" ng-model="startEvent.value" placeholder="Threshold Value">
+                                        </div>
+                                        <div class="col-xs-2">
+                                            <!--<label class="control-label">Logical Operator</label>-->
+                                            <select class="form-control" ng-model="startEvent.logicalOperator" placeholder="LOP" name="startEventLogicalOperator" ng-options="lo for lo in logicalOperators">
+                                                <option value="" disabled selected>Logical Operator</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-xs-1">
+                                            <!--<label class="control-label">Action</label>-->
+                                            <button class="btn btn-danger" ng-click="removeElement(startEvents, $index)">
+                                                <span class="glyphicon glyphicon-remove"></span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div ng-if="startEvent.type == 'predefined'">
+                                        <div class="col-xs-3">
+                                            <!--<label class="control-label">Trigger Parameter</label>-->
+                                            <select class="form-control" ng-model="startEvent.selectedParameter" placeholder="Trigger Parameter" name="startEvenParameter" ng-options="r.title for r in resultEvents">
+                                                <option value="" disabled selected>Predefined Event</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-xs-2">
+                                            <!--<label class="control-label">Logical Operator</label>-->
+                                            <select class="form-control" ng-model="startEvent.logicalOperator" placeholder="LOP" name="startEventLogicalOperator" ng-options="lo for lo in logicalOperators">
+                                                <option value="" disabled selected>Logical Operator</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-xs-1">
+                                            <!--<label class="control-label">Action</label>-->
+                                            <button class="btn btn-danger" ng-click="removeElement(startEvents, $index)">
+                                                <span class="glyphicon glyphicon-remove"></span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                                <div class="list-group-item panel-footer row">
+                                    <div class="col-xs-3">
+                                        <select class="form-control" ng-model="newStartEventType" placeholder="Event Type" name="startEventType" ng-options="et for et in startEventTypes">
+                                            <option value="" disabled selected>New Event Type</option>
                                         </select>
                                     </div>
                                     <div class="col-xs-2">
-                                        <!--<label class="control-label">Operator</label>-->
-                                        <select class="form-control" ng-model="startEvent.operator" placeholder="OP" name="startEventOperator" ng-options="o for o in operators">
-                                            <option value="" disabled selected>Operator</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-xs-4">
-                                        <!--<label class="control-label">Parameter Value</label>-->
-                                        <input type="number" class="form-control" ng-model="startEvent.value" placeholder="Parameter Value">
-                                    </div>
-                                    <div class="col-xs-1">
-                                        <!--<label class="control-label">Action</label>-->
-                                        <button class="btn btn-danger" ng-click="removeElement(startEvents, $index)">
-                                            <span class="glyphicon glyphicon-remove"></span>
+                                        <button type="button" class="btn btn-primary" ng-click="addElementWithType(startEvents, newStartEventType)">
+                                            <span class="glyphicon glyphicon-plus-sign"></span> Add event
                                         </button>
                                     </div>
-                                </fieldset>
-                                <div class="list-group-item panel-footer">
-                                    <button type="button" class="btn btn-primary" ng-click="addElement(startEvents)">
-                                        <span class="glyphicon glyphicon-plus-sign"></span> Add event
-                                    </button>
                                 </div>
                                 <p>{{startEvents}}</p>
                             </div>
@@ -139,7 +238,10 @@
                                             </button>
                                         </fieldset>
                                         <fieldset class="list-group-item">
-                                            <div class="col-xs-4">
+                                            <div class="col-xs-3">
+                                                <input type="text" class="form-control" ng-model="ruleCondition.complexCondition.formula" placeholder="Formula">
+                                            </div>
+                                            <div class="col-xs-3">
                                                 <input type="text" class="form-control" ng-model="ruleCondition.complexCondition.threshold" placeholder="Threshold">
                                             </div>
                                             <div class="col-xs-3">
